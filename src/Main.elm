@@ -84,23 +84,23 @@ view model =
     , body =
         [ div []
             [ div [ align "center", style "margin" "5px" ] [ img [ style "border-radius" "50%", src "https://avatars.githubusercontent.com/u/25725953?v=4" ] [] ]
-            , div [ style "align-items" "center" ] <| viewRepos model
+            , viewRepos model
             ]
         ]
     }
 
 
-viewRepos : Model -> List (Html Msg)
+viewRepos : Model -> Html Msg
 viewRepos model =
     case model of
         Failure ->
-            [ text "ERROR!!!" ]
+            div [ style "text-color" "red" ] [ text "ERROR!!!" ]
 
         Loading ->
-            [ text "Loading..." ]
+            div [] [ text "Loading..." ]
 
         Success repos ->
-            List.map decodeRepo repos |> List.map viewRepo
+            div [ style "align-items" "center" ] (List.map (decodeRepo >> viewRepo) repos)
 
 
 viewRepo : Repo -> Html Msg
