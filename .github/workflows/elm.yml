@@ -22,4 +22,6 @@ jobs:
 
     steps:
       - uses: justgook/setup-elm@1.2.0
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       - run: elm make src/Main.elm --output=elm.js
