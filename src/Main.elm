@@ -1,10 +1,10 @@
-module Main exposing (..)
+module Main exposing (main)
 
 import Browser exposing (Document)
 import Html exposing (Html, a, div, img, text)
 import Html.Attributes exposing (align, href, src, style)
 import Http
-import Json.Decode exposing (Decoder, Value, decodeValue, field, int, list, string, value)
+import Json.Decode exposing (Decoder, Value, bool, decodeValue, field, int, list, string, value)
 
 
 main : Program () Model Msg
@@ -28,6 +28,8 @@ type alias Repo =
     , description : String
     , stars : Int
     , url : String
+    , isFork : Bool
+    , pushedAt : String
     }
 
 
@@ -83,11 +85,27 @@ view model =
     { title = "RustemB's portfolio"
     , body =
         [ div []
-            [ div [ align "center", style "margin" "5px" ] [ img [ style "border-radius" "50%", src "https://avatars.githubusercontent.com/u/25725953?v=4" ] [] ]
+            [ viewProfileImage model
             , viewRepos model
             ]
         ]
     }
+
+
+viewProfileImage : Model -> Html Msg
+viewProfileImage _ =
+    div
+        [ align "center"
+        , style "margin" "5px"
+        ]
+        [ img
+            [ style "border-radius" "50%"
+            , style "border-style" "solid"
+            , style "border-color" "black"
+            , src "https://avatars.githubusercontent.com/u/25725953?v=4"
+            ]
+            []
+        ]
 
 
 viewRepos : Model -> Html Msg
@@ -100,12 +118,24 @@ viewRepos model =
             div [] [ text "Loading..." ]
 
         Success repos ->
-            div [ style "align-items" "center" ] (List.map (decodeRepo >> viewRepo) repos)
+            div [ style "align-items" "center" ] <|
+                List.map viewRepo <|
+                    List.reverse <|
+                        List.sortBy .pushedAt <|
+                            List.filter (not << .isFork) <|
+                                List.map decodeRepo repos
 
 
 viewRepo : Repo -> Html Msg
 viewRepo repo =
-    div [ style "border-color" "black", style "border-style" "solid", style "margin" "5px", style "padding" "10px", style "margin-left" "30%", style "margin-right" "30%" ]
+    div
+        [ style "border-color" "black"
+        , style "border-style" "solid"
+        , style "margin" "5px"
+        , style "padding" "10px"
+        , style "margin-left" "30%"
+        , style "margin-right" "30%"
+        ]
         [ div [] [ a [ href repo.url ] [ text repo.name ] ]
         , div [] [ text repo.description ]
         , div [] [ text <| ("⭐" ++ String.fromInt repo.stars) ]
@@ -117,5 +147,7 @@ decodeRepo repo =
     { name = Result.withDefault "" <| decodeValue (field "name" string) repo
     , description = Result.withDefault "" <| decodeValue (field "description" string) repo
     , stars = Result.withDefault 0 <| decodeValue (field "stargazers_count" int) repo
-    , url = Result.withDefault "" <| decodeValue (field "url" string) repo
+    , url = Result.withDefault "" <| decodeValue (field "html_url" string) repo
+    , isFork = Result.withDefault False <| decodeValue (field "fork" bool) repo
+    , pushedAt = Result.withDefault "" <| decodeValue (field "pushed_at" string) repo
     }
