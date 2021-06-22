@@ -4,7 +4,7 @@ import Browser exposing (Document)
 import Html exposing (Html, a, div, img, text)
 import Html.Attributes exposing (align, href, src, style)
 import Http
-import Json.Decode exposing (Decoder, Value, bool, decodeValue, field, int, list, string, value)
+import Json.Decode exposing (Decoder, bool, field, int, list, string)
 
 
 main : Program () Model Msg
@@ -20,7 +20,7 @@ main =
 type Model
     = Failure
     | Loading
-    | Success Repos
+    | Success (List Repo)
 
 
 type alias Repo =
@@ -33,13 +33,9 @@ type alias Repo =
     }
 
 
-type alias Repos =
-    List Value
-
-
 type Msg
     = Update
-    | GotRepos (Result Http.Error Repos)
+    | GotRepos (Result Http.Error (List Repo))
 
 
 init : () -> ( Model, Cmd Msg )
@@ -55,9 +51,16 @@ getReposList =
         }
 
 
-listDecode : Decoder (List Value)
+listDecode : Decoder (List Repo)
 listDecode =
-    list value
+    list <|
+        Json.Decode.map6 Repo
+            (field "name" string)
+            (field "description" string)
+            (field "stargazers_count" int)
+            (field "html_url" string)
+            (field "fork" bool)
+            (field "pushed_at" string)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -122,8 +125,7 @@ viewRepos model =
                 List.map viewRepo <|
                     List.reverse <|
                         List.sortBy .pushedAt <|
-                            List.filter (not << .isFork) <|
-                                List.map decodeRepo repos
+                            List.filter (not << .isFork) repos
 
 
 viewRepo : Repo -> Html Msg
@@ -140,14 +142,3 @@ viewRepo repo =
         , div [] [ text repo.description ]
         , div [] [ text <| ("⭐" ++ String.fromInt repo.stars) ]
         ]
-
-
-decodeRepo : Value -> Repo
-decodeRepo repo =
-    { name = Result.withDefault "" <| decodeValue (field "name" string) repo
-    , description = Result.withDefault "" <| decodeValue (field "description" string) repo
-    , stars = Result.withDefault 0 <| decodeValue (field "stargazers_count" int) repo
-    , url = Result.withDefault "" <| decodeValue (field "html_url" string) repo
-    , isFork = Result.withDefault False <| decodeValue (field "fork" bool) repo
-    , pushedAt = Result.withDefault "" <| decodeValue (field "pushed_at" string) repo
-    }
