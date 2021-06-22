@@ -4,7 +4,7 @@ import Browser exposing (Document)
 import Html exposing (Html, a, div, img, text)
 import Html.Attributes exposing (align, href, src, style)
 import Http
-import Json.Decode exposing (Decoder, bool, field, int, list, string)
+import Json.Decode as J
 
 
 main : Program () Model Msg
@@ -51,16 +51,16 @@ getReposList =
         }
 
 
-listDecode : Decoder (List Repo)
+listDecode : J.Decoder (List Repo)
 listDecode =
-    list <|
-        Json.Decode.map6 Repo
-            (field "name" string)
-            (field "description" string)
-            (field "stargazers_count" int)
-            (field "html_url" string)
-            (field "fork" bool)
-            (field "pushed_at" string)
+    J.list <|
+        J.map6 Repo
+            (J.field "name" J.string)
+            (J.field "description" J.string)
+            (J.field "stargazers_count" J.int)
+            (J.field "html_url" J.string)
+            (J.field "fork" J.bool)
+            (J.field "pushed_at" J.string)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
