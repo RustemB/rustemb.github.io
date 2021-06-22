@@ -7,6 +7,10 @@ import Http
 import Json.Decode as J
 
 
+
+-- import Yaml.Decode as Y
+
+
 main : Program () Model Msg
 main =
     Browser.document
@@ -30,6 +34,7 @@ type alias Repo =
     , url : String
     , isFork : Bool
     , pushedAt : String
+    , language : Maybe String
     }
 
 
@@ -51,16 +56,28 @@ getReposList =
         }
 
 
+
+{-
+   getLanguages : Cmd Msg
+   getLanguages =
+       Http.get
+           { url = "https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml"
+           , expect = Http.expectString GotLanguages
+           }
+-}
+
+
 listDecode : J.Decoder (List Repo)
 listDecode =
     J.list <|
-        J.map6 Repo
+        J.map7 Repo
             (J.field "name" J.string)
             (J.field "description" J.string)
             (J.field "stargazers_count" J.int)
             (J.field "html_url" J.string)
             (J.field "fork" J.bool)
             (J.field "pushed_at" J.string)
+            (J.field "language" (J.maybe J.string))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -104,7 +121,7 @@ viewProfileImage _ =
         [ img
             [ style "border-radius" "50%"
             , style "border-style" "solid"
-            , style "border-color" "black"
+            , style "border-color" "#e02c6d"
             , src "https://avatars.githubusercontent.com/u/25725953?v=4"
             ]
             []
@@ -131,14 +148,17 @@ viewRepos model =
 viewRepo : Repo -> Html Msg
 viewRepo repo =
     div
-        [ style "border-color" "black"
+        [ style "border-color" "#e02c6d"
         , style "border-style" "solid"
         , style "margin" "5px"
         , style "padding" "10px"
         , style "margin-left" "30%"
         , style "margin-right" "30%"
+        , style "background-color" "#303030"
+        , style "border-radius" "5px"
         ]
-        [ div [] [ a [ href repo.url ] [ text repo.name ] ]
+        [ div [] [ text repo.name ]
         , div [] [ text repo.description ]
         , div [] [ text <| ("⭐" ++ String.fromInt repo.stars) ]
+        , div [] [ text <| Maybe.withDefault "Other" <| repo.language ]
         ]
