@@ -35,6 +35,7 @@ type alias Repo =
     , isFork : Bool
     , pushedAt : String
     , language : Maybe String
+    , isArchived : Bool
     }
 
 
@@ -70,7 +71,7 @@ getReposList =
 listDecode : J.Decoder (List Repo)
 listDecode =
     J.list <|
-        J.map7 Repo
+        J.map8 Repo
             (J.field "name" J.string)
             (J.field "description" J.string)
             (J.field "stargazers_count" J.int)
@@ -78,6 +79,7 @@ listDecode =
             (J.field "fork" J.bool)
             (J.field "pushed_at" J.string)
             (J.field "language" (J.maybe J.string))
+            (J.field "archived" J.bool)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -142,7 +144,8 @@ viewRepos model =
                 List.map viewRepo <|
                     List.reverse <|
                         List.sortBy .pushedAt <|
-                            List.filter (not << .isFork) repos
+                            List.filter (not << .isArchived) <|
+                                List.filter (not << .isFork) repos
 
 
 viewRepo : Repo -> Html Msg
@@ -157,7 +160,7 @@ viewRepo repo =
         , style "background-color" "#303030"
         , style "border-radius" "5px"
         ]
-        [ div [] [ text repo.name ]
+        [ div [] [ a [ href repo.url, style "text-decoration" "none" ] [ text repo.name ] ]
         , div [] [ text repo.description ]
         , div [] [ text <| ("⭐" ++ String.fromInt repo.stars) ]
         , div [] [ text <| Maybe.withDefault "Other" <| repo.language ]
