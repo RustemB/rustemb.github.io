@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser exposing (Document)
-import Html exposing (Html, a, div, img, text)
+import Html exposing (Html, a, div, img, span, text)
 import Html.Attributes exposing (align, href, src, style)
 import Http
 import Json.Decode as J
@@ -55,17 +55,6 @@ getReposList =
         { url = "https://api.github.com/users/RustemB/repos"
         , expect = Http.expectJson GotRepos listDecode
         }
-
-
-
-{-
-   getLanguages : Cmd Msg
-   getLanguages =
-       Http.get
-           { url = "https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml"
-           , expect = Http.expectString GotLanguages
-           }
--}
 
 
 listDecode : J.Decoder (List Repo)
@@ -163,5 +152,34 @@ viewRepo repo =
         [ div [] [ a [ href repo.url, style "text-decoration" "none" ] [ text repo.name ] ]
         , div [] [ text repo.description ]
         , div [] [ text <| ("⭐" ++ String.fromInt repo.stars) ]
-        , div [] [ text <| Maybe.withDefault "Other" <| repo.language ]
+        , let
+            lang =
+                Maybe.withDefault "Other" <| repo.language
+          in
+          div [] [ span [ style "color" <| languageToColor lang ] [ text "● " ], text lang ]
         ]
+
+
+languageToColor : String -> String
+languageToColor lang =
+    case lang of
+        "Lua" ->
+            "#000080"
+
+        "Rust" ->
+            "#dea584"
+
+        "C++" ->
+            "#f34b7d"
+
+        "Raku" ->
+            "#0000fb"
+
+        "Prolog" ->
+            "#74283c"
+
+        "Elm" ->
+            "#60b5cc"
+
+        _ ->
+            "#ffffff"
