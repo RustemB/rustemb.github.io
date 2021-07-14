@@ -6,11 +6,6 @@ import Html.Attributes exposing (align, href, src, style)
 import Http
 import Json.Decode as J
 
-
-
--- import Yaml.Decode as Y
-
-
 main : Program () Model Msg
 main =
     Browser.document
