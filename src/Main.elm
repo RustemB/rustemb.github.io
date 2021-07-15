@@ -6,6 +6,7 @@ import Html.Attributes exposing (align, href, src, style)
 import Http
 import Json.Decode as J
 
+
 main : Program () Model Msg
 main =
     Browser.document
@@ -139,8 +140,6 @@ viewRepo repo =
         , style "border-style" "solid"
         , style "margin" "5px"
         , style "padding" "10px"
-        , style "margin-left" "30%"
-        , style "margin-right" "30%"
         , style "background-color" "#303030"
         , style "border-radius" "5px"
         ]
