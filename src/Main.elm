@@ -2,8 +2,8 @@ module Main exposing (main)
 
 import Browser exposing (Document)
 import Components as C
-import Html exposing (Html, div, img, text)
-import Html.Attributes exposing (align, src, style)
+import Html exposing (Html, div, text)
+import Html.Attributes exposing (style)
 import Http
 import Json.Decode as J
 import Message exposing (Msg(..))
@@ -78,27 +78,11 @@ view model =
     { title = "RustemB's portfolio"
     , body =
         [ div []
-            [ viewProfileImage model
+            [ C.viewProfileImage
             , viewRepos model
             ]
         ]
     }
-
-
-viewProfileImage : Model -> Html Msg
-viewProfileImage _ =
-    div
-        [ align "center"
-        , style "margin" "5px"
-        ]
-        [ img
-            [ style "border-radius" "50%"
-            , style "border-style" "solid"
-            , style "border-color" "#e02c6d"
-            , src "https://avatars.githubusercontent.com/u/25725953?v=4"
-            ]
-            []
-        ]
 
 
 viewRepos : Model -> Html Msg

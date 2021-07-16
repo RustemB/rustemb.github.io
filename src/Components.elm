@@ -1,21 +1,41 @@
-module Components exposing (languageToColor, viewRepo)
+module Components exposing (languageToColor, viewProfileImage, viewRepo)
 
-import Html exposing (Html, a, div, span, text)
-import Html.Attributes exposing (href, style)
+import Html exposing (Attribute, Html, a, div, img, span, text)
+import Html.Attributes exposing (align, href, src, style)
 import Message exposing (Msg)
 import Repository exposing (Repo)
 
 
+viewProfileImage : Html Msg
+viewProfileImage =
+    div
+        [ align "center"
+        , style "margin" "5px"
+        ]
+        [ img
+            [ style "border-radius" "50%"
+            , style "border-style" "solid"
+            , style "border-color" "#e02c6d"
+            , src "https://avatars.githubusercontent.com/u/25725953?v=4"
+            ]
+            []
+        ]
+
+
+repoStyle : List (Attribute Msg)
+repoStyle =
+    [ style "border-color" "#e02c6d"
+    , style "border-style" "solid"
+    , style "margin" "5px"
+    , style "padding" "10px"
+    , style "background-color" "#303030"
+    , style "border-radius" "5px"
+    ]
+
+
 viewRepo : Repo -> Html Msg
 viewRepo repo =
-    div
-        [ style "border-color" "#e02c6d"
-        , style "border-style" "solid"
-        , style "margin" "5px"
-        , style "padding" "10px"
-        , style "background-color" "#303030"
-        , style "border-radius" "5px"
-        ]
+    div repoStyle
         [ div [] [ a [ href repo.url, style "text-decoration" "none" ] [ text repo.name ] ]
         , div [] [ text repo.description ]
         , div [] [ text <| ("⭐" ++ String.fromInt repo.stars) ]
