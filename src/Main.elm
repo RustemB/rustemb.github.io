@@ -1,10 +1,13 @@
 module Main exposing (main)
 
 import Browser exposing (Document)
-import Html exposing (Html, a, div, img, span, text)
-import Html.Attributes exposing (align, href, src, style)
+import Components as C
+import Html exposing (Html, div, img, text)
+import Html.Attributes exposing (align, src, style)
 import Http
 import Json.Decode as J
+import Message exposing (Msg(..))
+import Repository exposing (Repo)
 
 
 main : Program () Model Msg
@@ -21,23 +24,6 @@ type Model
     = Failure
     | Loading
     | Success (List Repo)
-
-
-type alias Repo =
-    { name : String
-    , description : String
-    , stars : Int
-    , url : String
-    , isFork : Bool
-    , pushedAt : String
-    , language : Maybe String
-    , isArchived : Bool
-    }
-
-
-type Msg
-    = Update
-    | GotRepos (Result Http.Error (List Repo))
 
 
 init : () -> ( Model, Cmd Msg )
@@ -126,54 +112,8 @@ viewRepos model =
 
         Success repos ->
             div [ style "align-items" "center" ] <|
-                List.map viewRepo <|
+                List.map C.viewRepo <|
                     List.reverse <|
                         List.sortBy .pushedAt <|
                             List.filter (not << .isArchived) <|
                                 List.filter (not << .isFork) repos
-
-
-viewRepo : Repo -> Html Msg
-viewRepo repo =
-    div
-        [ style "border-color" "#e02c6d"
-        , style "border-style" "solid"
-        , style "margin" "5px"
-        , style "padding" "10px"
-        , style "background-color" "#303030"
-        , style "border-radius" "5px"
-        ]
-        [ div [] [ a [ href repo.url, style "text-decoration" "none" ] [ text repo.name ] ]
-        , div [] [ text repo.description ]
-        , div [] [ text <| ("⭐" ++ String.fromInt repo.stars) ]
-        , let
-            lang =
-                Maybe.withDefault "Other" <| repo.language
-          in
-          div [] [ span [ style "color" <| languageToColor lang ] [ text "● " ], text lang ]
-        ]
-
-
-languageToColor : String -> String
-languageToColor lang =
-    case lang of
-        "Lua" ->
-            "#000080"
-
-        "Rust" ->
-            "#dea584"
-
-        "C++" ->
-            "#f34b7d"
-
-        "Raku" ->
-            "#0000fb"
-
-        "Prolog" ->
-            "#74283c"
-
-        "Elm" ->
-            "#60b5cc"
-
-        _ ->
-            "#ffffff"
