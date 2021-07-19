@@ -77,7 +77,15 @@ view : Model -> Document Msg
 view model =
     { title = "RustemB's portfolio"
     , body =
-        [ div
+        [ Html.node "style"
+            []
+            [ text """
+    a:link { color: #0aaeb3; }
+    a:visited { color: #2c78bf; }
+    a:hover { color: #68a8e4; }
+        """
+            ]
+        , div
             [ style "font-family" "FantasqueSansMonoRegular"
             , style "font-weight" "normal"
             , style "font-style" "normal"
