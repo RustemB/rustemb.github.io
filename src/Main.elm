@@ -77,7 +77,17 @@ view : Model -> Document Msg
 view model =
     { title = "RustemB's portfolio"
     , body =
-        [ div []
+        [ div
+            [ style "font-family" "FantasqueSansMonoRegular"
+            , style "font-weight" "normal"
+            , style "font-style" "normal"
+            , style "background-color" "#1c1b19"
+            , style "color" "#fce8c3"
+            , style "position" "absolute"
+            , style "top" "0"
+            , style "left" "0"
+            , style "width" "100%"
+            ]
             [ C.viewProfileImage
             , viewRepos model
             ]

@@ -1,7 +1,7 @@
 module Components exposing (languageToColor, viewProfileImage, viewRepo)
 
 import Html exposing (Attribute, Html, a, div, img, span, text)
-import Html.Attributes exposing (align, href, src, style)
+import Html.Attributes exposing (align, class, href, src, style)
 import Message exposing (Msg)
 import Repository exposing (Repo)
 
