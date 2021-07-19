@@ -77,14 +77,7 @@ view : Model -> Document Msg
 view model =
     { title = "RustemB's portfolio"
     , body =
-        [ Html.node "style"
-            []
-            [ text """
-    a:link { color: #0aaeb3; }
-    a:visited { color: #2c78bf; }
-    a:hover { color: #68a8e4; }
-        """
-            ]
+        [ stylesheet
         , div
             [ style "font-family" "FantasqueSansMonoRegular"
             , style "font-weight" "normal"
@@ -119,3 +112,15 @@ viewRepos model =
                         List.sortBy .pushedAt <|
                             List.filter (not << .isArchived) <|
                                 List.filter (not << .isFork) repos
+
+
+stylesheet : Html Msg
+stylesheet =
+    Html.node "style"
+        []
+        [ text """@import url(https://fontlibrary.org//face/fantasque-sans-mono);
+a:link { color: #0aaeb3; }
+a:visited { color: #2c78bf; }
+a:hover { color: #68a8e4; }
+"""
+        ]
