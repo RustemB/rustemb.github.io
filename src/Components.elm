@@ -68,5 +68,8 @@ languageToColor lang =
         "Elm" ->
             "#60b5cc"
 
+        "Emacs Lisp" ->
+            "#c065db"
+
         _ ->
             "#ffffff"
