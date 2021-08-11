@@ -1,0 +1,34 @@
+
+src/Components.elm,184
+module ComponentsComponents1,0
+viewProfileImage =viewProfileImage10,290
+repoStyle =repoStyle26,674
+viewRepo repo =viewRepo37,925
+languageToColor lang =languageToColor51,1407
+
+src/Repository.elm,87
+module RepositoryRepository1,0
+type alias Repo =type4,36
+type alias RepoRepo4,36
+
+src/Message.elm,100
+module MessageMessage1,0
+type MsgMsg7,83
+    = UpdateUpdate8,92
+    | GotReposGotRepos9,105
+
+src/Main.elm,404
+module MainMain1,0
+main =main14,300
+type ModelModel23,450
+    = FailureFailure24,461
+    | LoadingLoading25,475
+    | SuccessSuccess26,489
+init _ =init30,549
+getReposList =getReposList35,613
+listDecode =listDecode43,804
+update msg _ =update57,1240
+subscriptions _ =subscriptions72,1561
+view model =view77,1623
+viewRepos model =viewRepos100,2230
+stylesheet =stylesheet118,2768
