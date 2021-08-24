@@ -71,5 +71,8 @@ languageToColor lang =
         "Emacs Lisp" ->
             "#c065db"
 
+        "Vim script" ->
+            "#199f4b"
+
         _ ->
             "#ffffff"
