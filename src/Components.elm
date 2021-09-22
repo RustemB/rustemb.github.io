@@ -74,5 +74,8 @@ languageToColor lang =
         "Vim script" ->
             "#199f4b"
 
+        "Assembly" ->
+            "#6e4c13"
+
         _ ->
             "#ffffff"
